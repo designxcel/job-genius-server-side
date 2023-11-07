@@ -28,13 +28,49 @@ async function run() {
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
 
-    const productCollection = client.db('jobGenius').collection('articles');
+    const articleCollection = client.db('jobGenius').collection('articles');
+    const jobCollection = client.db('jobGenius').collection('jobs');
 
     //for articles endPoint
     app.get('/articles', async(req, res) =>{
-      const cursor = productCollection.find();
+      const cursor = articleCollection.find();
       const result = await cursor.toArray();
       res.send(result)
+    })
+
+    //for all jobs endpoint
+    app.get('/jobs', async(req, res) =>{
+      const cursor = jobCollection.find()
+      const allJobs = await cursor.toArray();
+      res.send(allJobs)
+    })
+
+    //for onsite job endpoint
+    app.get('/jobs/onsite', async(req, res) =>{
+      const cursor = jobCollection.find({job_type: 'Onsite'})
+      const onsiteJobs = await cursor.toArray();
+      res.send(onsiteJobs)
+    })
+
+    //for remote job endpoint
+    app.get('/jobs/remote', async(req, res) =>{
+      const cursor = jobCollection.find({job_type: 'Remote'})
+      const remoteJobs = await cursor.toArray();
+      res.send(remoteJobs)
+    })
+
+    //for hybrid job endpoint
+    app.get('/jobs/hybrid', async(req, res) =>{
+      const cursor = jobCollection.find({job_type: 'Hybrid'})
+      const hybridJobs = await cursor.toArray();
+      res.send(hybridJobs)
+    })
+
+    //for part-time job endpoint
+    app.get('/jobs/part-time', async(req, res) =>{
+      const cursor = jobCollection.find({job_type: 'PartTime'})
+      const partTimeJobs = await cursor.toArray();
+      res.send(partTimeJobs)
     })
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
