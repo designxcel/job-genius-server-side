@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 
@@ -30,7 +30,25 @@ async function run() {
 
     const articleCollection = client.db('jobGenius').collection('articles');
     const jobCollection = client.db('jobGenius').collection('jobs');
+    const myJobCollection = client.db('jobGenius').collection('myJobs');
 
+    //for myjobspost endpoint
+    app.post('/myjobs', async(req, res) => {
+      const myPostJobs = req.body;
+      console.log(myPostJobs)
+      const result = await myJobCollection.insertOne(myPostJobs)
+      res.send(result)
+    })
+
+    //for getting my jobs post endpoint
+    app.get('/myjobs', async(req, res) => {
+      let query = {};
+      if(req.query?.email){
+          query = {email: req.query.email}
+      }
+      const result = await myJobCollection.find(query).toArray()
+      res.send(result)
+    })
     //for articles endPoint
     app.get('/articles', async(req, res) =>{
       const cursor = articleCollection.find();
@@ -44,6 +62,8 @@ async function run() {
       const allJobs = await cursor.toArray();
       res.send(allJobs)
     })
+
+
 
     //for onsite job endpoint
     app.get('/jobs/onsite', async(req, res) =>{
@@ -71,6 +91,14 @@ async function run() {
       const cursor = jobCollection.find({job_type: 'PartTime'})
       const partTimeJobs = await cursor.toArray();
       res.send(partTimeJobs)
+    })
+    //for job details endpoint
+    app.get('/jobs/:id', async(req,res) =>{
+      const id = req.params.id;
+      // console.log(id)
+      const query = {_id: new ObjectId(id)}
+      const result = await jobCollection.findOne(query)
+      res.send(result)
     })
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
