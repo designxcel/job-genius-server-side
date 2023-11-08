@@ -49,6 +49,15 @@ async function run() {
       const result = await myJobCollection.find(query).toArray()
       res.send(result)
     })
+
+    //for deleting myJobs endpoint
+    app.delete('/myjobs/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await myJobCollection.deleteOne(query)
+      res.send(result)
+    })
+
     //for articles endPoint
     app.get('/articles', async(req, res) =>{
       const cursor = articleCollection.find();
