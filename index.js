@@ -97,6 +97,25 @@ async function run() {
       res.send(result)
     })
 
+
+    //for email wise applied jobs search(resume)
+    app.get('/resume', async(req, res) => {
+      let query = {};
+      if(req.query?.email){
+          query = {email: req.query.email}
+      }
+      const result = await resumeCollection.find(query).toArray()
+      res.send(result)
+    })
+
+    //for resume delete endpoint
+    app.delete('/resume/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await resumeCollection.deleteOne(query)
+      res.send(result)
+    })
+
     //for articles endPoint
     app.get('/articles', async(req, res) =>{
       const cursor = articleCollection.find();
