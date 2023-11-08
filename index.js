@@ -31,6 +31,7 @@ async function run() {
     const articleCollection = client.db('jobGenius').collection('articles');
     const jobCollection = client.db('jobGenius').collection('jobs');
     const myJobCollection = client.db('jobGenius').collection('myJobs');
+    const resumeCollection = client.db('jobGenius').collection('resume');
 
     //for myjobspost endpoint
     app.post('/myjobs', async(req, res) => {
@@ -85,6 +86,14 @@ async function run() {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)}
       const result = await myJobCollection.deleteOne(query)
+      res.send(result)
+    })
+
+    //for resume collection post endpoint
+    app.post('/resume', async(req, res) => {
+      const resumePost = req.body;
+      console.log(resumePost)
+      const result = await resumeCollection.insertOne(resumePost)
       res.send(result)
     })
 
