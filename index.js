@@ -116,6 +116,20 @@ async function run() {
       res.send(result)
     })
 
+    //for resume status changing endpoint
+    app.patch('/resume/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const updateStatus = req.body;
+      const updateInfo = {
+        $set: {
+          status: updateStatus.status
+        }
+      }
+      const result = await resumeCollection.updateOne(filter, updateInfo)
+      res.send(result)
+    })
+
     //for articles endPoint
     app.get('/articles', async(req, res) =>{
       const cursor = articleCollection.find();
