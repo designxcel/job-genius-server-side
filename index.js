@@ -50,6 +50,36 @@ async function run() {
       res.send(result)
     })
 
+
+    //for getting update single myjobs data
+    app.get('/myjobs/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await myJobCollection.findOne(query);
+      res.send(result)
+    })
+
+    //for updating info to the client side
+    app.put('/myjobs/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const options = {upsert:true}
+      const updatedJobsPost = req.body;
+      const JobsPost = {
+        $set: {
+          jobTitle: updatedJobsPost.jobTitle, 
+          jobType: updatedJobsPost.jobType, 
+          salary: updatedJobsPost.salary, 
+          postDate: updatedJobsPost.postDate, 
+          deadline: updatedJobsPost.deadline, 
+          jobDesc: updatedJobsPost.jobDesc, 
+          name: updatedJobsPost.name
+        }
+      }
+      const result = await myJobCollection.updateOne(filter, JobsPost, options)
+      res.send(result)
+    })
+
     //for deleting myJobs endpoint
     app.delete('/myjobs/:id', async(req, res) =>{
       const id = req.params.id;
